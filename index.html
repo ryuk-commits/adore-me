@@ -557,28 +557,41 @@
                     </div>
                 </div>
             </div>
+          <div class="query-form">
+    
+    <div id="login-section" style="text-align:center; margin-bottom:20px;">
+        <p style="color:#ccc; margin-bottom:10px;">Please login to submit a query</p>
+        <a id="btn-login" href="#" class="btn-discord" style="width:100%; justify-content:center;">
+            Login with Discord
+        </a>
+    </div>
 
-            <div class="query-form">
-                <div class="form-group">
-                    <label>Discord Username</label>
-                    <input type="text" id="username" class="form-control" placeholder="e.g. user#1234">
-                </div>
-                <div class="form-group">
-                    <label>Query Topic</label>
-                    <select id="topic" class="form-control">
-                        <option>General Question</option>
-                        <option>Partnership Request</option>
-                        <option>Report Issue</option>
-                        <option>Appeal Ban</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Message</label>
-                    <textarea id="message" class="form-control" placeholder="Type your message here..."></textarea>
-                </div>
-                <button type="button" class="btn-submit" onclick="submitQuery()">Send Query</button>
-            </div>
+    <div id="user-info" style="display:none; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:15px;">
+        <img id="user-avatar" src="" style="width:40px; height:40px; border-radius:50%;" alt="User">
+        <div>
+            <div style="color:#888; font-size:0.8rem;">Logged in as:</div>
+            <div id="user-name" style="color:white; font-weight:bold;">Loading...</div>
         </div>
+    </div>
+
+    <div id="actual-form" style="display:none;">
+        <div class="form-group">
+            <label>Query Topic</label>
+            <select id="topic" class="form-control">
+                <option>General Question</option>
+                <option>Partnership Request</option>
+                <option>Report Issue</option>
+                <option>Appeal Ban</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Message</label>
+            <textarea id="message" class="form-control" placeholder="Type your message here..."></textarea>
+        </div>
+        <button type="button" class="btn-submit" onclick="submitQuery()">Send Query</button>
+    </div>
+
+</div>
     </section>
 
     <footer>
@@ -663,10 +676,111 @@
         });
     }
 </script>
+   <script>
+    // --- CONFIGURATION ---
+    // PASTE THE URL YOU COPIED FROM STEP 1 HERE 👇
+    const discordLoginUrl = "https://discord.com/oauth2/authorize?client_id=1471151951214542989&response_type=code&redirect_uri=https%3A%2F%2Fadore-me.vercel.app%2F&scope=identify"; 
+    const webhookURL = "PASTE_YOUR_WEBHOOK_URL_HERE"; 
 
+    // --- ELEMENTS ---
+    const loginBtn = document.getElementById('btn-login');
+    const loginSection = document.getElementById('login-section');
+    const userInfo = document.getElementById('user-info');
+    const actualForm = document.getElementById('actual-form');
+    const userNameDisplay = document.getElementById('user-name');
+    const userAvatarDisplay = document.getElementById('user-avatar');
+
+    // 1. Set the login button link
+    loginBtn.href = discordLoginUrl;
+
+    // 2. Check if page loaded with a Discord Token
+    window.onload = () => {
+        const fragment = new URLSearchParams(window.location.hash.slice(1));
+        const accessToken = fragment.get('access_token');
+        const tokenType = fragment.get('token_type');
+
+        if (accessToken) {
+            // User is logged in! Fetch their info
+            fetch('https://discord.com/api/users/@me', {
+                headers: {
+                    authorization: `${tokenType} ${accessToken}`
+                }
+            })
+            .then(result => result.json())
+            .then(response => {
+                // HIDE Login Button
+                loginSection.style.display = 'none';
+                
+                // SHOW Form & User Info
+                userInfo.style.display = 'flex';
+                actualForm.style.display = 'block';
+
+                // Update UI with real data
+                const { username, discriminator, id, avatar } = response;
+                const fullUser = `${username}#${discriminator}`;
+                
+                userNameDisplay.innerText = fullUser;
+                userNameDisplay.dataset.id = id; // Store ID for webhook
+                
+                // Set Avatar
+                if(avatar) {
+                    userAvatarDisplay.src = `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
+                } else {
+                    userAvatarDisplay.src = "https://cdn.discordapp.com/embed/avatars/0.png";
+                }
+            })
+            .catch(console.error);
+        }
+    };
+
+    // 3. Updated Submit Function
+    function submitQuery() {
+        const user = document.getElementById('user-name').innerText;
+        const userId = document.getElementById('user-name').dataset.id;
+        const topic = document.getElementById('topic').value;
+        const msg = document.getElementById('message').value;
+
+        if(msg === "") { alert("Please type a message!"); return; }
+
+        const btn = document.querySelector('.btn-submit');
+        const originalText = btn.innerText;
+        btn.innerText = "Sending...";
+
+        fetch(webhookURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                embeds: [{
+                    title: "🔒 Verified User Query",
+                    color: 5763719, // Green
+                    thumbnail: { url: userAvatarDisplay.src },
+                    fields: [
+                        { name: "Verified User", value: `<@${userId}>\n(${user})`, inline: true },
+                        { name: "Topic", value: topic, inline: true },
+                        { name: "Message", value: msg }
+                    ],
+                    footer: { text: `User ID: ${userId}` },
+                    timestamp: new Date()
+                }]
+            })
+        })
+        .then(response => {
+            if(response.ok) {
+                btn.innerText = "Sent! ✅";
+                btn.style.background = "#00ff88";
+                document.getElementById('message').value = "";
+                setTimeout(() => { btn.innerText = originalText; btn.style.background = "#a18cd1"; }, 3000);
+            } else {
+                alert("Error sending.");
+                btn.innerText = originalText;
+            }
+        });
+    }
+</script>
    </body>
 
 </html>
+
 
 
 
