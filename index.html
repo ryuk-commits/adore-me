@@ -391,6 +391,30 @@
     background: linear-gradient(135deg, #00d2ff, #3a7bd5); 
     color: #fff;
 }
+        /* --- SHADOW ROLE STYLES --- */
+
+/* 1. The Badge (Black background with Gold text) */
+.shadow .role-badge { 
+    background: rgba(0, 0, 0, 0.8);      /* Very Dark Background */
+    color: #FFD700;                      /* Gold Text */
+    border: 1px solid #FFD700;           /* Gold Border */
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2); /* Subtle gold shimmer */
+}
+
+/* 2. The Card Hover Effect (Gold Glow) */
+.staff-card.shadow:hover {
+    border-color: #FFD700;               /* Border turns Gold */
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); /* Gold Light Glow */
+    transform: translateY(-10px);        /* Lifts up */
+}
+
+/* 3. The Icon Circle (The Black & Gold Mix) */
+.staff-card.shadow .avatar-circle {
+    /* Starts Black, fades into Gold at the bottom corner */
+    background: linear-gradient(135deg, #1a1a1a 40%, #FFD700 100%); 
+    color: #FFD700; /* Makes the emoji/icon Gold too */
+    border: 1px solid #333;
+}
     </style>
     
 </head>
@@ -457,16 +481,16 @@
     <div class="staff-name">Ryuk</div>
     <span class="role-badge">Security++</span>
 </div>
-            <div class="staff-card mod">
+            <div class="staff-card shadow">
                 <div class="avatar-circle">⚔️</div>
                 <div class="staff-name">Aahlad</div>
-                <span class="role-badge">Moderator</span>
+                <span class="role-badge">Shadow</span>
             </div>
 
-            <div class="staff-card mod">
+            <div class="staff-card shadow">
                 <div class="avatar-circle">👻</div>
                 <div class="staff-name">Ghost</div>
-                <span class="role-badge">Moderator</span>
+                <span class="role-badge">Shadow</span>
             </div>
         </div>
     </section>
@@ -642,6 +666,7 @@
    </body>
 
 </html>
+
 
 
 
