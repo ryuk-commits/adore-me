@@ -331,7 +331,31 @@
         }
         .modal-overlay.active .modal-box { transform: scale(1); }
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; }
+       
+
+.hero-buttons {
+    display: flex;
+    justify-content: center; /* Centers them horizontally */
+    align-items: center;     /* Centers them vertically */
+    gap: 20px;               /* Adds space between buttons */
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.btn-info {
+    margin-left: 0 !important; /* Removes old margin */
+    height: 56px;              /* Forces same height as discord button */
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-discord {
+    height: 56px;              /* Forces same height as info button */
+    display: inline-flex;
+    align-items: center;
+}
     </style>
+    
 </head>
 <body>
 
@@ -578,6 +602,7 @@
    </body>
 
 </html>
+
 
 
 
