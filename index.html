@@ -354,6 +354,21 @@
     display: inline-flex;
     align-items: center;
 }
+        /* Style for the new image emoji */
+.custom-emoji {
+    width: 60%;  /* Makes it look like an icon size */
+    height: 60%;
+    object-fit: contain; /* Keeps the original shape */
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); /* Adds a little pop */
+}
+
+/* Ensure the circle keeps centering items */
+.avatar-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Prevents image from spilling out */
+}
     </style>
     
 </head>
@@ -400,10 +415,12 @@
 
         <div class="staff-grid">
             <div class="staff-card owner">
-                <div class="avatar-circle">https://cdn.discordapp.com/emojis/1464144342490022047.webp?size=128</div>
-                <div class="staff-name">Adit</div>
-                <span class="role-badge">Owner</span>
-            </div>
+    <div class="avatar-circle">
+        <img src="crown.png" class="custom-emoji" alt="Owner Icon">
+    </div>
+    <div class="staff-name">Adit</div>
+    <span class="role-badge">Owner</span>
+</div>
 
             <div class="staff-card admin">
                 <div class="avatar-circle">🛡️</div>
@@ -602,6 +619,7 @@
    </body>
 
 </html>
+
 
 
 
