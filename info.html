@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More Info | /adoreme</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- COPYING YOUR EXACT STYLES FOR CONSISTENCY --- */
+        :root {
+            --primary: #a18cd1;
+            --secondary: #fbc2eb;
+            --bg: #050505;
+            --text: #ffffff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 2rem; }
+
+        /* Ambient Background */
+        .ambient-glow {
+            position: fixed; top: 20%; left: 50%; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(161, 140, 209, 0.15) 0%, rgba(0,0,0,0) 70%);
+            transform: translate(-50%, -50%); z-index: -1; pointer-events: none;
+        }
+
+        /* Container */
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* Header */
+        header { text-align: center; margin-bottom: 4rem; padding-top: 2rem; }
+        h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 0.5rem; }
+        h1 span { color: var(--primary); font-style: italic; }
+        p.subtitle { color: #888; font-size: 1.1rem; }
+
+        /* Info Sections */
+        .info-card {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            padding: 2.5rem; border-radius: 20px; margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+        .info-card h2 { color: var(--secondary); font-size: 1.8rem; margin-bottom: 1rem; }
+        .info-card p { line-height: 1.8; color: #ccc; margin-bottom: 1rem; }
+        .info-card ul { margin-left: 20px; color: #ccc; line-height: 1.8; }
+
+        /* Back Button */
+        .btn-back {
+            display: inline-block; padding: 12px 30px; border-radius: 50px;
+            background: transparent; border: 1px solid var(--primary); color: var(--primary);
+            text-decoration: none; font-weight: 700; transition: 0.3s; margin-bottom: 2rem;
+        }
+        .btn-back:hover { background: var(--primary); color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <div class="container">
+        <a href="index.html" class="btn-back">← Back to Home</a>
+
+        <header>
+            <h1>SERVER <span>DETAILS</span></h1>
+            <p class="subtitle">Extended rules, lore, and extra information.</p>
+        </header>
+
+        <div class="info-card">
+            <h2>📜 Extended Rules</h2>
+            <p>While our main page covers the basics, here are the specific guidelines for voice channels and streaming:</p>
+            <ul>
+                <li><strong>No Earrape:</strong> Keep mic volume at a reasonable level.</li>
+                <li><strong>Streaming:</strong> NSFW content during streams results in an instant ban.</li>
+                <li><strong>Respect Staff:</strong> Moderator decisions are final.</li>
+            </ul>
+        </div>
+
+        <div class="info-card">
+            <h2>💎 Booster Perks List</h2>
+            <p>Boosting /adoreme gives you incredible perks that instantly set you apart:</p>
+            <ul>
+                <li>Custom Role Icon & Color</li>
+                <li>Access to the hidden #boosters-lounge</li>
+                <li>Image permissions in general chat</li>
+                <li>Priority support for tickets</li>
+            </ul>
+        </div>
+
+        <div class="info-card">
+            <h2>🤝 Partnership Requirements</h2>
+            <p>Want to partner with us? Your server must meet these criteria:</p>
+            <p>500+ Members, active chat, and no botted members. Open a ticket in the main server to apply!</p>
+        </div>
+
+        <footer style="text-align:center; color:#555; margin-top:3rem;">
+            &copy; 2026 /ADOREME Community.
+        </footer>
+    </div>
+
+</body>
+</html>
