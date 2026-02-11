@@ -369,6 +369,28 @@
     justify-content: center;
     overflow: hidden; /* Prevents image from spilling out */
 }
+        /* --- SECURITY++ ROLE STYLES --- */
+
+/* 1. The Badge (Text at bottom) */
+.security .role-badge { 
+    background: rgba(0, 240, 255, 0.15); /* Faint Blue Background */
+    color: #00F0FF;                      /* Neon Cyan Text */
+    border: 1px solid #00F0FF;           /* Neon Cyan Border */
+}
+
+/* 2. The Card Hover Effect (The Glow) */
+.staff-card.security:hover {
+    border-color: #00F0FF;               /* Border turns Cyan */
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.5); /* Cyan Light Glow */
+    transform: translateY(-10px);        /* Lifts up */
+}
+
+/* 3. The Icon Circle Background */
+.staff-card.security .avatar-circle {
+    /* Cool Cyber Blue Gradient */
+    background: linear-gradient(135deg, #00d2ff, #3a7bd5); 
+    color: #fff;
+}
     </style>
     
 </head>
@@ -428,9 +450,9 @@
     <div class="staff-name">Thakur</div>
     <span class="role-badge">Gaurdian</span>
 </div>
-            <div class="staff-card moderator">
+            <div class="staff-card security">
     <div class="avatar-circle">
-        <img src="ryuk.png" class="custom-emoji" alt="Moderator Icon">
+        <img src="ryuk.png" class="custom-emoji" alt="Security Icon">
     </div>
     <div class="staff-name">Ryuk</div>
     <span class="role-badge">Security++</span>
@@ -620,6 +642,7 @@
    </body>
 
 </html>
+
 
 
 
