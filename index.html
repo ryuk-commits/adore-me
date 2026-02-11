@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>/adoreme | Discord Community</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #a18cd1;
+            --secondary: #fbc2eb;
+            --accent: #5865F2; /* Discord Blurple */
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg: #050505;
+            --text: #ffffff;
+            
+            /* Staff Role Glow Colors */
+            --owner-glow: #ffd700; /* Gold */
+            --admin-glow: #ff4757; /* Red */
+            --mod-glow: #2ed573;   /* Green */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* --- Ambient Background Animation --- */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(161, 140, 209, 0.15) 0%, rgba(0,0,0,0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+            animation: pulse 8s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        /* --- Navbar --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.95), transparent);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #ccc;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .nav-links a::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -5px; left: 0; background-color: var(--primary); transition: width 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('server.gif'); 
+            background-size: cover; background-position: center;
+            z-index: -2; filter: saturate(1.2);
+        }
+
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.4), rgba(5,5,5,1));
+            z-index: -1;
+        }
+
+        .hero-content {
+            z-index: 1; padding: 2rem; max-width: 900px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        h1 {
+            font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 1rem;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1 span { color: var(--primary); font-style: italic; letter-spacing: -2px; }
+
+        .tagline {
+            font-size: 1.5rem; color: #ddd; margin-bottom: 2.5rem;
+            font-weight: 400; letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .btn {
+            padding: 16px 32px; border-radius: 50px; font-weight: 700;
+            text-decoration: none; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 10px;
+            cursor: pointer; border: 1px solid transparent; font-size: 1rem;
+        }
+
+        .btn-discord {
+            background-color: var(--accent); color: white;
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.4);
+        }
+        .btn-discord:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 40px rgba(88, 101, 242, 0.7);
+            background-color: #4752c4;
+        }
+
+        /* --- Section Styling --- */
+        .section-container { max-width: 1200px; margin: 0 auto; padding: 6rem 2rem; }
+        
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-header h2 {
+            font-size: 3rem; margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, #bbb);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .section-header p { color: #888; font-size: 1.1rem; }
+
+        /* --- STAFF SECTION (Glow Effects) --- */
+        .staff-grid {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;
+        }
+
+        .staff-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 250px;
+            text-align: center;
+            transition: 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+        }
+
+        /* Hover Effects per Role */
+        .staff-card.owner:hover { border-color: var(--owner-glow); box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); transform: translateY(-10px); }
+        .staff-card.admin:hover { border-color: var(--admin-glow); box-shadow: 0 0 30px rgba(255, 71, 87, 0.2); transform: translateY(-10px); }
+        .staff-card.mod:hover { border-color: var(--mod-glow); box-shadow: 0 0 30px rgba(46, 213, 115, 0.2); transform: translateY(-10px); }
+
+        .avatar-circle {
+            width: 80px; height: 80px; margin: 0 auto 1.5rem;
+            border-radius: 50%; background: #333;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* Avatar Gradients */
+        .staff-card.owner .avatar-circle { background: linear-gradient(135deg, #fce38a, #f38181); color: #fff; }
+        .staff-card.admin .avatar-circle { background: linear-gradient(135deg, #ff9a9e, #fecfef); color: #fff; }
+        .staff-card.mod .avatar-circle { background: linear-gradient(135deg, #84fab0, #8fd3f4); color: #fff; }
+
+        .staff-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+        
+        .role-badge {
+            display: inline-block; padding: 5px 15px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .owner .role-badge { background: rgba(255, 215, 0, 0.15); color: var(--owner-glow); border: 1px solid var(--owner-glow); }
+        .admin .role-badge { background: rgba(255, 71, 87, 0.15); color: var(--admin-glow); border: 1px solid var(--admin-glow); }
+        .mod .role-badge { background: rgba(46, 213, 115, 0.15); color: var(--mod-glow); border: 1px solid var(--mod-glow); }
+
+        /* --- EVENTS Grid --- */
+        .events-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+        
+        .event-card {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            padding: 0; border-radius: 20px; overflow: hidden; transition: 0.3s; position: relative;
+        }
+        .event-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .event-date {
+            position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.7);
+            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: var(--secondary);
+            border: 1px solid var(--glass-border);
+        }
+        .event-content { padding: 2rem; }
+        .event-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 0.5rem; display: block; }
+        .event-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+        .event-card p { color: #ccc; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; }
+        
+        .btn-small {
+            padding: 8px 20px; font-size: 0.85rem; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border); color: #fff; border-radius: 8px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-small:hover { background: var(--primary); color: #000; }
+
+        /* --- QUERY / SUPPORT Section --- */
+        .query-wrapper {
+            display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem;
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 30px; padding: 3rem; backdrop-filter: blur(20px);
+        }
+        .query-info h3 { font-size: 2rem; margin-bottom: 1rem; color: var(--secondary); }
+        .query-info p { color: #aaa; margin-bottom: 2rem; line-height: 1.6; }
+
+        .support-pill {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px;
+        }
+        .icon-box {
+            width: 40px; height: 40px; background: var(--primary); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold;
+        }
+
+        .query-form { display: flex; flex-direction: column; gap: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: #ddd; font-size: 0.9rem; }
+        
+        .form-control {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+            padding: 12px 20px; border-radius: 10px; color: #fff; font-size: 1rem; outline: none; transition: 0.3s;
+        }
+        .form-control:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
+        textarea.form-control { min-height: 120px; resize: none; }
+
+        .btn-submit {
+            background: var(--primary); color: #000; border: none; padding: 15px;
+            border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .btn-submit:hover { background: #fff; transform: translateY(-2px); }
+
+        footer {
+            text-align: center; padding: 3rem; color: #555; font-size: 0.9rem;
+            border-top: 1px solid var(--glass-border); margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .query-wrapper { grid-template-columns: 1fr; padding: 1.5rem; }
+            .nav-links { display: none; }
+        }
+        
+        /* Modal Popup */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
+            z-index: 2000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-box {
+            background: #151515; width: 90%; max-width: 500px;
+            border-radius: 20px; border: 1px solid var(--glass-border);
+            padding: 2.5rem; position: relative;
+            transform: scale(0.9); transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <nav>
+        <div class="logo" onclick="window.scrollTo(0,0)">/ADOREME</div>
+        <div class="nav-links">
+            <a href="#hero">Home</a>
+            <a href="#staff">Staff</a>
+            <a href="#events">Events</a>
+            <a href="#query">Query</a>
+        </div>
+    </nav>
+
+    <header id="hero" class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <h1>WELCOME TO<br><span>/ADOREME</span></h1>
+            <p class="tagline">Better members, chillin vibes and a lot of enjoyment.</p>
+            
+            <a href="https://discord.gg/AWARRMkz" target="_blank" class="btn btn-discord">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 14.155 14.155 0 0 0-.64 1.314 18.277 18.277 0 0 0-4.664 0 14.28 14.28 0 0 0-.642-1.314.077.077 0 0 0-.08-.037A19.736 19.736 0 0 0 3.688 4.37a.072.072 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-2.068-9.133-3.688-13.689a.08.08 0 0 0-.032-.027zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.086 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.086 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z"/></svg>
+                Join /adoreme
+            </a>
+        </div>
+    </header>
+
+    <section id="staff" class="section-container">
+        <div class="section-header">
+            <h2>Meet The Team</h2>
+            <p>The legends keeping the server vibes alive.</p>
+        </div>
+
+        <div class="staff-grid">
+            <div class="staff-card owner">
+                <div class="avatar-circle">👑</div>
+                <div class="staff-name">Adit</div>
+                <span class="role-badge">Owner</span>
+            </div>
+
+            <div class="staff-card admin">
+                <div class="avatar-circle">🛡️</div>
+                <div class="staff-name">Thakur</div>
+                <span class="role-badge">Admin</span>
+            </div>
+
+            <div class="staff-card mod">
+                <div class="avatar-circle">⚔️</div>
+                <div class="staff-name">Ryuk</div>
+                <span class="role-badge">Moderator</span>
+            </div>
+
+            <div class="staff-card mod">
+                <div class="avatar-circle">⚔️</div>
+                <div class="staff-name">Aahlad</div>
+                <span class="role-badge">Moderator</span>
+            </div>
+
+            <div class="staff-card mod">
+                <div class="avatar-circle">👻</div>
+                <div class="staff-name">Ghost</div>
+                <span class="role-badge">Moderator</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="events" class="section-container">
+        <div class="section-header">
+            <h2>Upcoming Events</h2>
+            <p>Join the community and participate in our weekly activities.</p>
+        </div>
+
+        <div class="events-grid">
+            <div class="event-card">
+                <span class="event-date">Sat, Feb 24</span>
+                <div class="event-content">
+                    <span class="event-tag">VC Hangout</span>
+                    <h3>🎬 Movie Night: Interstellar</h3>
+                    <p>Grab some popcorn! We are streaming Interstellar in the main stage channel. Chill vibes only.</p>
+                    <button class="btn-small" onclick="openModal('Event Details', 'Time: 8:00 PM EST<br>Location: #Stage-1<br>Hosted by: Staff')">View Details</button>
+                </div>
+            </div>
+
+            <div class="event-card">
+                <span class="event-date">Sun, Feb 25</span>
+                <div class="event-content">
+                    <span class="event-tag">Gaming</span>
+                    <h3>🎮 Valorant 5v5 Custom</h3>
+                    <p>Community customs night. All ranks welcome. Winner team gets a special role for the week!</p>
+                    <button class="btn-small" onclick="openModal('Gaming Event', 'Time: 6:00 PM EST<br>Game: Valorant<br>Prize: @Champion Role')">Register</button>
+                </div>
+            </div>
+
+            <div class="event-card">
+                <span class="event-date">Fri, Mar 01</span>
+                <div class="event-content">
+                    <span class="event-tag">Giveaway</span>
+                    <h3>💎 Nitro Classic Giveaway</h3>
+                    <p>Celebrating 2,000 members! Join the voice channel to be eligible for the drop.</p>
+                    <button class="btn-small" onclick="openModal('Giveaway Info', 'Requirement: Must be in VC for 30 mins.<br>Prize: 1 Month Nitro')">Info</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="query" class="section-container">
+        <div class="query-wrapper">
+            <div class="query-info">
+                <h3>Have a Query?</h3>
+                <p>Need help with roles, partnerships, or reporting an issue? Submit a query directly to our staff team via the website bot.</p>
+                
+                <div class="support-pill">
+                    <div class="icon-box">?</div>
+                    <div>
+                        <strong>General Support</strong>
+                        <div style="font-size:0.8rem; color:#888;">For basic server help</div>
+                    </div>
+                </div>
+
+                <div class="support-pill">
+                    <div class="icon-box">!</div>
+                    <div>
+                        <strong>Report User</strong>
+                        <div style="font-size:0.8rem; color:#888;">Open a confidential ticket</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-form">
+                <div class="form-group">
+                    <label>Discord Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="e.g. user#1234">
+                </div>
+                <div class="form-group">
+                    <label>Query Topic</label>
+                    <select id="topic" class="form-control">
+                        <option>General Question</option>
+                        <option>Partnership Request</option>
+                        <option>Report Issue</option>
+                        <option>Appeal Ban</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="message" class="form-control" placeholder="Type your message here..."></textarea>
+                </div>
+                <button type="button" class="btn-submit" onclick="submitQuery()">Send Query</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 /ADOREME Community. All rights reserved.
+    </footer>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 style="color:var(--primary); margin-bottom:1rem;" id="m-title">Title</h2>
+            <p style="color:#ccc; line-height:1.6;" id="m-text">Content</p>
+        </div>
+    </div>
+<!-- KEEP EVERYTHING ABOVE YOUR OLD SCRIPT SAME -->
+<!-- Only the SCRIPT section below is upgraded -->
+
+<script>
+    // Modal Logic
+    const modal = document.getElementById('modal');
+    const mTitle = document.getElementById('m-title');
+    const mText = document.getElementById('m-text');
+
+    function openModal(title, text) {
+        mTitle.innerText = title;
+        mText.innerHTML = text;
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+    }
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // Secure Submit Logic (Webhook Hidden)
+    function submitQuery() {
+        const btn = document.querySelector('.btn-submit');
+        const user = document.getElementById('username').value;
+        const topic = document.getElementById('topic').value;
+        const msg = document.getElementById('message').value;
+
+        if (user === "" || msg === "") {
+            alert("Please fill in your username and message!");
+            return;
+        }
+
+        const originalText = btn.innerText;
+        btn.innerText = "Sending...";
+        btn.disabled = true;
+
+        fetch("/api/webhook", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                user: user,
+                topic: topic,
+                msg: msg
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                btn.innerText = "Sent Successfully! ✅";
+                btn.style.background = "#00ff88";
+
+                document.getElementById('username').value = "";
+                document.getElementById('message').value = "";
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "#a18cd1";
+                    btn.disabled = false;
+                }, 3000);
+            } else {
+                throw new Error("Failed");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Something went wrong!");
+            btn.innerText = originalText;
+            btn.disabled = false;
+        });
+    }
+</script>
+
+   </body>
+</html>
