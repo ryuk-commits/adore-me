@@ -614,46 +614,84 @@
         if (e.target === modal) closeModal();
     });
 
-    // Secure Submit Logic (Webhook Hidden)
-    function submitQuery() {
+     function submitQuery() {
+        // 1. CONFIGURATION
+        const webhookURL = "YOUR_WEBHOOK_URL_HERE"; // ⚠️ PASTE YOUR WEBHOOK URL INSIDE THESE QUOTES
+        const ownerID = "<@123456789012345678>";    // ⚠️ PASTE YOUR ID HERE
+
         const btn = document.querySelector('.btn-submit');
         const user = document.getElementById('username').value;
         const topic = document.getElementById('topic').value;
         const msg = document.getElementById('message').value;
 
+        // 2. CHECK EMPTY FIELDS
         if (user === "" || msg === "") {
-            alert("Please fill in your username and message!");
+            alert("Please enter your name and message!");
             return;
         }
 
-        const originalText = btn.innerText;
+        // 3. SPAM PROTECTION (COOLDOWN)
+        const lastQueryTime = localStorage.getItem('lastQueryTime');
+        if (lastQueryTime) {
+            const timePassed = Date.now() - parseInt(lastQueryTime);
+            if (timePassed < 30000) { // 30 seconds
+                const secondsLeft = Math.ceil((30000 - timePassed) / 1000);
+                alert(`Please wait ${secondsLeft} seconds before sending another query.`);
+                return;
+            }
+        }
+
+        // 4. SENDING STATE
+        const originalText = "Send Query";
         btn.innerText = "Sending...";
         btn.disabled = true;
+        btn.style.cursor = "not-allowed";
 
-        fetch("/api/webhook", {
+        // 5. SEND TO DISCORD
+        fetch(webhookURL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                user: user,
-                topic: topic,
-                msg: msg
+                content: `🚨 **New Query** from \`${user}\` || ${ownerID} ||`, // Pings you
+                embeds: [{
+                    title: "New Query Received 📩",
+                    color: 10592673,
+                    fields: [
+                        { name: "From User", value: user, inline: true },
+                        { name: "Topic", value: topic, inline: true },
+                        { name: "Message", value: msg }
+                    ],
+                    footer: { text: "AdoreMe Query Bot" },
+                    timestamp: new Date()
+                }]
             })
         })
         .then(response => {
             if (response.ok) {
-                btn.innerText = "Sent Successfully! ✅";
-                btn.style.background = "#00ff88";
+                // SUCCESS: Save time & Start Timer
+                localStorage.setItem('lastQueryTime', Date.now());
+                document.getElementById('message').value = ""; 
+                
+                btn.style.background = "#555"; 
+                
+                let timeLeft = 30;
+                const timer = setInterval(() => {
+                    btn.innerText = `Wait ${timeLeft}s...`;
+                    timeLeft--;
 
-                document.getElementById('username').value = "";
-                document.getElementById('message').value = "";
+                    if (timeLeft < 0) {
+                        clearInterval(timer);
+                        btn.innerText = originalText;
+                        btn.style.background = "#a18cd1"; 
+                        btn.style.cursor = "pointer";
+                        btn.disabled = false;
+                    }
+                }, 1000);
 
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.style.background = "#a18cd1";
-                    btn.disabled = false;
-                }, 3000);
             } else {
-                throw new Error("Failed");
+                alert("Error sending. Check Webhook URL.");
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
         })
         .catch(error => {
@@ -668,6 +706,7 @@
    </body>
 
 </html>
+
 
 
 
