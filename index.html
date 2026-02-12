@@ -614,91 +614,80 @@
         if (e.target === modal) closeModal();
     });
 
-     function submitQuery() {
-        // 1. CONFIGURATION
-        const webhookURL = "https://discord.com/api/webhooks/1470851471267332099/X5aTOwiw__xwcy6hvptX4Q_X4uO1XZPgNFyMVEVccvhdSzsXAQb43k-PXHuESJgcp1f-"; // ⚠️ PASTE YOUR WEBHOOK URL INSIDE THESE QUOTES
-        const ownerID = "<@123456789012345678>";    // ⚠️ PASTE YOUR ID HERE
-
+         function submitQuery() {
         const btn = document.querySelector('.btn-submit');
         const user = document.getElementById('username').value;
         const topic = document.getElementById('topic').value;
         const msg = document.getElementById('message').value;
 
-        // 2. CHECK EMPTY FIELDS
+        // 1. Check Empty Fields
         if (user === "" || msg === "") {
-            alert("Please enter your name and message!");
+            alert("Please fill in your username and message!");
             return;
         }
 
-        // 3. SPAM PROTECTION (COOLDOWN)
+        // 2. Cooldown Logic (30 Seconds Spam Protection)
         const lastQueryTime = localStorage.getItem('lastQueryTime');
         if (lastQueryTime) {
             const timePassed = Date.now() - parseInt(lastQueryTime);
-            if (timePassed < 30000) { // 30 seconds
+            if (timePassed < 30000) { // 30000ms = 30 seconds
                 const secondsLeft = Math.ceil((30000 - timePassed) / 1000);
                 alert(`Please wait ${secondsLeft} seconds before sending another query.`);
                 return;
             }
         }
 
-        // 4. SENDING STATE
+        // 3. Update Button UI
         const originalText = "Send Query";
         btn.innerText = "Sending...";
         btn.disabled = true;
         btn.style.cursor = "not-allowed";
 
-        // 5. SEND TO DISCORD
-        fetch(webhookURL, {
+        // 4. Send to YOUR Internal API
+        fetch("/api/webhook", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                content: `🚨 **New Query** from \`${user}\` || ${ownerID} ||`, // Pings you
-                embeds: [{
-                    title: "New Query Received 📩",
-                    color: 10592673,
-                    fields: [
-                        { name: "From User", value: user, inline: true },
-                        { name: "Topic", value: topic, inline: true },
-                        { name: "Message", value: msg }
-                    ],
-                    footer: { text: "AdoreMe Query Bot" },
-                    timestamp: new Date()
-                }]
+                user: user,
+                topic: topic,
+                msg: msg
             })
         })
         .then(response => {
             if (response.ok) {
-                // SUCCESS: Save time & Start Timer
+                // Success! Save time & Clear inputs
                 localStorage.setItem('lastQueryTime', Date.now());
                 document.getElementById('message').value = ""; 
                 
-                btn.style.background = "#555"; 
-                
+                btn.innerText = "Sent Successfully! ✅";
+                btn.style.background = "#00ff88"; // Green success color
+
+                // Visual Timer Countdown
                 let timeLeft = 30;
                 const timer = setInterval(() => {
                     btn.innerText = `Wait ${timeLeft}s...`;
+                    btn.style.background = "#555"; // Grey while waiting
                     timeLeft--;
 
                     if (timeLeft < 0) {
                         clearInterval(timer);
                         btn.innerText = originalText;
-                        btn.style.background = "#a18cd1"; 
+                        btn.style.background = "#a18cd1"; // Reset to Purple
                         btn.style.cursor = "pointer";
                         btn.disabled = false;
                     }
                 }, 1000);
 
             } else {
-                alert("Error sending. Check Webhook URL.");
-                btn.innerText = originalText;
-                btn.disabled = false;
+                throw new Error("Failed");
             }
         })
         .catch(error => {
             console.error("Error:", error);
-            alert("Something went wrong!");
+            alert("Something went wrong! Check your connection.");
             btn.innerText = originalText;
             btn.disabled = false;
+            btn.style.cursor = "pointer";
         });
     }
 </script>
@@ -706,6 +695,7 @@
    </body>
 
 </html>
+
 
 
 
